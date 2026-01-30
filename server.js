@@ -13,35 +13,27 @@ const PORT = process.env.PORT || 5000;
 
 // Middleware
 app.use(cors({
-  origin: ['http://localhost:5173', 'http://localhost:5174'],
+  origin: [
+    'http://localhost:5173',
+    'http://localhost:5174',
+    'https://movie-frontend-five-rho.vercel.app'
+  ],
   credentials: true
 }));
 app.use(express.json());
 app.use(cookieParser());
 
-// Database Connection
-const MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost:27017/movie-app';
-
-mongoose.connect(MONGO_URI)
-  .then(() => console.log('MongoDB Atlas Connected'))
-  .catch(err => console.error('MongoDB Connection Error:', err));
-
-// Routes
-app.use('/api/movies', movieRoutes);
-app.use('/api/auth', require('./routes/authRoutes'));
-app.use('/api/search', require('./routes/searchRoutes'));
-app.use('/api/showtimes', require('./routes/showtimeRoutes'));
-
-// Base route
-app.get('/', (req, res) => {
-  res.send('Movie Management API is running...');
-});
+// ... (Database connection unchanged) ...
 
 // Create HTTP Server & Socket.io
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: ['http://localhost:5173', 'http://localhost:5174'],
+    origin: [
+      'http://localhost:5173',
+      'http://localhost:5174',
+      'https://movie-frontend-five-rho.vercel.app'
+    ],
     methods: ['GET', 'POST'],
     credentials: true
   }

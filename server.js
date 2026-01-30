@@ -16,7 +16,8 @@ const PORT = process.env.PORT || 5000;
 const ALLOWED_ORIGINS = [
   'http://localhost:5173',
   'http://localhost:5174',
-  process.env.CLIENT_URL // Add your deployed frontend URL here (e.g., https://my-movie-app.vercel.app)
+  'https://movie-frontend-five-rho.vercel.app', // Explicitly added your Vercel URL
+  process.env.CLIENT_URL
 ].filter(Boolean);
 
 app.use(cors({

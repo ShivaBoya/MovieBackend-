@@ -3,12 +3,31 @@ const router = express.Router();
 const Movie = require('../models/Movie');
 const { protect } = require('../middleware/authMiddleware');
 
+const axios = require('axios');
+const https = require('https');
+
+// Force IPv4 to bypass potential IPv6 routing issues (Common with some ISPs)
+const agent = new https.Agent({ family: 4 });
+
+// ... (existing imports)
+
 // GET all movies (Public)
 router.get('/', async (req, res) => {
     try {
         // Sort by createdAt: 1 to show oldest first (new movies at bottom)
         const movies = await Movie.find().sort({ createdAt: 1 });
         res.json(movies);
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+});
+
+// GET single movie by ID (Public)
+router.get('/:id', async (req, res) => {
+    try {
+        const movie = await Movie.findById(req.params.id);
+        if (!movie) return res.status(404).json({ message: 'Movie not found' });
+        res.json(movie);
     } catch (err) {
         res.status(500).json({ message: err.message });
     }

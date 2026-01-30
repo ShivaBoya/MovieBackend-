@@ -27,6 +27,10 @@ const movieSchema = new mongoose.Schema({
         type: String, // Storing Base64 string or URL
         required: false
     },
+    trailer: {
+        type: String,
+        required: false
+    },
     createdAt: {
         type: Date,
         default: Date.now

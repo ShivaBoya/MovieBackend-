@@ -12,11 +12,15 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 // Middleware
+// Middleware
+const ALLOWED_ORIGINS = [
+  'http://localhost:5173',
+  'http://localhost:5174',
+  process.env.CLIENT_URL // Add your deployed frontend URL here (e.g., https://my-movie-app.vercel.app)
+].filter(Boolean);
+
 app.use(cors({
-  origin: [
-    'http://localhost:5173',
-    'http://localhost:5174'
-  ],
+  origin: ALLOWED_ORIGINS,
   credentials: true
 }));
 app.use(express.json());
@@ -44,10 +48,7 @@ app.get('/', (req, res) => {
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: [
-      'http://localhost:5173',
-      'http://localhost:5174'
-    ],
+    origin: ALLOWED_ORIGINS,
     methods: ['GET', 'POST'],
     credentials: true
   }

@@ -33,7 +33,8 @@ router.post('/register', async (req, res) => {
             const token = generateToken(user._id);
             res.cookie('token', token, {
                 httpOnly: true,
-                secure: process.env.NODE_ENV === 'production',
+                secure: true, // Always true for cross-site (required for SameSite=None)
+                sameSite: 'None', // Critical for cross-site usage
                 maxAge: 30 * 24 * 60 * 60 * 1000 // 30 days
             });
 
@@ -41,6 +42,7 @@ router.post('/register', async (req, res) => {
                 _id: user._id,
                 username: user.username,
                 email: user.email,
+                token // Return token in body as well
             });
         } else {
             res.status(400).json({ message: 'Invalid user data' });
@@ -63,7 +65,8 @@ router.post('/login', async (req, res) => {
             const token = generateToken(user._id);
             res.cookie('token', token, {
                 httpOnly: true,
-                secure: process.env.NODE_ENV === 'production',
+                secure: true, // Always true for cross-site
+                sameSite: 'None',
                 maxAge: 30 * 24 * 60 * 60 * 1000 // 30 days
             });
 
@@ -71,6 +74,7 @@ router.post('/login', async (req, res) => {
                 _id: user._id,
                 username: user.username,
                 email: user.email,
+                token // Return token in body
             });
         } else {
             res.status(401).json({ message: 'Invalid email or password' });

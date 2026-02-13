@@ -2,8 +2,6 @@ const express = require('express');
 const axios = require('axios');
 const router = express.Router();
 
-// GET /api/search?title=...
-// GET /api/search?title=...
 router.get('/', async (req, res) => {
     const { title } = req.query;
 
@@ -11,7 +9,6 @@ router.get('/', async (req, res) => {
         return res.status(400).json({ message: 'Title query parameter is required' });
     }
 
-    // Prefer TMDB if available, otherwise fallback to OMDb (or handle error)
     const tmdbKey = process.env.TMDB_API_KEY;
 
     if (tmdbKey) {
@@ -25,7 +22,6 @@ router.get('/', async (req, res) => {
 
             const results = response.data.results || [];
 
-            // Map TMDB format to OMDb format for frontend compatibility
             const mappedResults = results.map(movie => ({
                 Title: movie.title,
                 Year: movie.release_date ? movie.release_date.substring(0, 4) : 'N/A',
@@ -40,12 +36,10 @@ router.get('/', async (req, res) => {
 
         } catch (error) {
             console.error('TMDB Fetch Error:', error.message);
-            // Fallback to OMDb logic below if preferred, or just return error
             return res.status(500).json({ message: 'Failed to fetch data from TMDB' });
         }
     }
 
-    // Fallback to OMDb logic (Deprecated/Backup)
     const omdbKey = process.env.OMDB_API_KEY;
     if (!omdbKey) {
         return res.status(500).json({ message: 'API key not configured' });
@@ -65,7 +59,6 @@ router.get('/', async (req, res) => {
     }
 });
 
-// GET /api/search/popular
 router.get('/popular', async (req, res) => {
     const tmdbKey = process.env.TMDB_API_KEY;
     if (!tmdbKey) {
@@ -81,8 +74,6 @@ router.get('/popular', async (req, res) => {
             }
         });
 
-        // Pass through the TMDB results directly (or map if we want strict consistency)
-        // User's snippet expects 'results' array with TMDB structure
         res.json(response.data);
     } catch (error) {
         console.error('TMDB Popular Fetch Error:', error.message);

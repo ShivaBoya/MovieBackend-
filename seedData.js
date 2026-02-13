@@ -1,12 +1,9 @@
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 const Movie = require('./models/Movie');
-const mockMovies = require('../frontend/src/data/movies.json'); // Import from frontend folder
+const mockMovies = require('../frontend/src/data/movies.json');
 
 dotenv.config();
-
-// Note: genreImages and getPoster logic is no longer needed here as "movies.json" now contains the final poster URLs
-// We will just map the fields into the schema structure.
 
 const processedMovies = mockMovies.map(movie => ({
     name: movie.title,
@@ -14,7 +11,7 @@ const processedMovies = mockMovies.map(movie => ({
     releaseYear: movie.year,
     rating: movie.rating,
     description: `A generic description for ${movie.title}`,
-    poster: movie.poster, // Directly use the poster from JSON
+    poster: movie.poster,
     trailer: movie.trailer
 }));
 

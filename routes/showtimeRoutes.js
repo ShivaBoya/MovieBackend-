@@ -3,7 +3,6 @@ const router = express.Router();
 const Showtime = require('../models/Showtime');
 const Theater = require('../models/Theater');
 
-// GET /api/showtimes/:id
 router.get('/:id', async (req, res) => {
     try {
         const showtime = await Showtime.findById(req.params.id)

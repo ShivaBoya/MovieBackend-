@@ -6,7 +6,7 @@ const showtimeSchema = new mongoose.Schema({
     startTime: { type: Date, required: true },
     price: { type: Number, required: true },
     bookedSeats: [{
-        type: String // e.g., "A1", "B5"
+        type: String
     }]
 }, { timestamps: true });
 

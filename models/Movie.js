@@ -24,7 +24,7 @@ const movieSchema = new mongoose.Schema({
         required: false
     },
     poster: {
-        type: String, // Storing Base64 string or URL
+        type: String,
         required: false
     },
     trailer: {

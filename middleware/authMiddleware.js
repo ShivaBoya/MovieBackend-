@@ -12,7 +12,7 @@ const protect = async (req, res, next) => {
 
     if (token) {
         try {
-            const decoded = jwt.verify(token, 'secret_key_123'); // TODO: Use env
+            const decoded = jwt.verify(token, 'secret_key_123');
             req.user = await User.findById(decoded.id).select('-password');
             next();
         } catch (error) {

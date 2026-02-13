@@ -3,16 +3,12 @@ const router = express.Router();
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 
-// Generate JWT
 const generateToken = (id) => {
     return jwt.sign({ id }, 'secret_key_123', {
         expiresIn: '30d',
     });
 };
 
-// @desc    Register new user
-// @route   POST /api/auth/register
-// @access  Public
 router.post('/register', async (req, res) => {
     const { username, email, password } = req.body;
 
@@ -33,16 +29,16 @@ router.post('/register', async (req, res) => {
             const token = generateToken(user._id);
             res.cookie('token', token, {
                 httpOnly: true,
-                secure: true, // Always true for cross-site (required for SameSite=None)
-                sameSite: 'None', // Critical for cross-site usage
-                maxAge: 30 * 24 * 60 * 60 * 1000 // 30 days
+                secure: true,
+                sameSite: 'None',
+                maxAge: 30 * 24 * 60 * 60 * 1000
             });
 
             res.status(201).json({
                 _id: user._id,
                 username: user.username,
                 email: user.email,
-                token // Return token in body as well
+                token
             });
         } else {
             res.status(400).json({ message: 'Invalid user data' });
@@ -52,9 +48,6 @@ router.post('/register', async (req, res) => {
     }
 });
 
-// @desc    Authenticate a user
-// @route   POST /api/auth/login
-// @access  Public
 router.post('/login', async (req, res) => {
     const { email, password } = req.body;
 
@@ -65,16 +58,16 @@ router.post('/login', async (req, res) => {
             const token = generateToken(user._id);
             res.cookie('token', token, {
                 httpOnly: true,
-                secure: true, // Always true for cross-site
+                secure: true,
                 sameSite: 'None',
-                maxAge: 30 * 24 * 60 * 60 * 1000 // 30 days
+                maxAge: 30 * 24 * 60 * 60 * 1000
             });
 
             res.json({
                 _id: user._id,
                 username: user.username,
                 email: user.email,
-                token // Return token in body
+                token
             });
         } else {
             res.status(401).json({ message: 'Invalid email or password' });
@@ -86,9 +79,6 @@ router.post('/login', async (req, res) => {
 
 const { protect } = require('../middleware/authMiddleware');
 
-// @desc    Get current user profile
-// @route   GET /api/auth/me
-// @access  Private
 router.get('/me', protect, async (req, res) => {
     try {
         const user = await User.findById(req.user._id).select('-password');
@@ -98,9 +88,6 @@ router.get('/me', protect, async (req, res) => {
     }
 });
 
-// @desc    Update user profile
-// @route   PUT /api/auth/profile
-// @access  Private
 router.put('/profile', protect, async (req, res) => {
     try {
         const user = await User.findById(req.user._id);
@@ -119,7 +106,7 @@ router.put('/profile', protect, async (req, res) => {
                 _id: updatedUser._id,
                 username: updatedUser.username,
                 email: updatedUser.email,
-                token: generateToken(updatedUser._id) // Optional: issue new token if critical info changes
+                token: generateToken(updatedUser._id)
             });
         } else {
             res.status(404).json({ message: 'User not found' });
@@ -129,9 +116,6 @@ router.put('/profile', protect, async (req, res) => {
     }
 });
 
-// @desc    Logout user / clear cookie
-// @route   POST /api/auth/logout
-// @access  Public
 router.post('/logout', (req, res) => {
     res.cookie('token', '', {
         httpOnly: true,
